@@ -9,6 +9,7 @@ from app.book.schemas import (
     books_to_response,
 )
 from app.database import AsyncSessionDep, SessionDep
+from app.mailer import MailerDep, MailMessage
 
 router = APIRouter(prefix="/books", tags=["books"])
 
@@ -52,4 +53,10 @@ async def delete_book(book_id: int, session: AsyncSessionDep) -> None:
     await session.delete(book)
     await session.commit()
 
+    return None
+
+
+@router.post("/notify")
+async def notify(mailer: MailerDep) -> None:
+    await mailer.send(MailMessage(to="test@example.com", subject="Test", body="Test"))
     return None
