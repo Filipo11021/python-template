@@ -8,7 +8,7 @@ from app.book.schemas import (
     book_to_response,
     books_to_response,
 )
-from app.database import AsyncSessionDep, SessionDep
+from app.database import AsyncSessionDep
 from app.mailer import MailerDep, MailMessage
 
 router = APIRouter(prefix="/books", tags=["books"])
@@ -17,8 +17,9 @@ router = APIRouter(prefix="/books", tags=["books"])
 @router.get(
     "/",
 )
-async def get_books(session: SessionDep) -> list[BookResponse]:
-    books = session.exec(select(Book)).all()
+async def get_books(session: AsyncSessionDep) -> list[BookResponse]:
+    result = await session.exec(select(Book))
+    books = result.all()
 
     return books_to_response(books)
 

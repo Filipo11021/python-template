@@ -29,7 +29,7 @@ async def test_book_flow(client: AsyncClient) -> None:
 
     response = await client.delete(f"/api/books/{book_id}")
     assert response.status_code == 200
-    assert response.json() == {}
+    assert response.json() is None
 
     response = await client.get(f"/api/books/{book_id}")
     assert response.status_code == 404
