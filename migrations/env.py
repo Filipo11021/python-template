@@ -1,11 +1,10 @@
 from logging.config import fileConfig
 
 from alembic import context
-from sqlalchemy import engine_from_config, pool
 from sqlmodel import SQLModel
 
 from app.book.models import Book
-from app.database import create_sync_engine
+from app.database import create_sync_database_engine
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -59,7 +58,7 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    connectable = create_sync_engine()
+    connectable = create_sync_database_engine()
 
     with connectable.connect() as connection:
         context.configure(connection=connection, target_metadata=target_metadata)
