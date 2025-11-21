@@ -43,3 +43,14 @@ async def test_get_nonexistent_book(client: AsyncClient) -> None:
 async def test_delete_nonexistent_book(client: AsyncClient) -> None:
     response = await client.delete("/api/books/99999")
     assert response.status_code == 400
+
+
+async def test_upload(client: AsyncClient) -> None:
+    files = {"file": ("test.txt", b"test content", "text/plain")}
+    response = await client.post("/api/books/uploads", files=files)
+    assert response.status_code == 200
+    file_path = response.json()
+
+    response = await client.get(f"/api/books/uploads/{file_path}")
+    assert response.status_code == 200
+    assert response.content == b"test content"

@@ -1,4 +1,6 @@
-from fastapi import APIRouter, HTTPException
+from uuid import uuid4
+
+from fastapi import APIRouter, HTTPException, Response, UploadFile
 from sqlmodel import select
 
 from app.book.models import Book
@@ -10,6 +12,7 @@ from app.book.schemas import (
 )
 from app.database import AsyncSessionDep
 from app.mailer import MailerDep, MailMessage
+from app.storage.deps import StorageDep
 
 router = APIRouter(prefix="/books", tags=["books"])
 
@@ -61,3 +64,20 @@ async def delete_book(book_id: int, session: AsyncSessionDep) -> None:
 async def notify(mailer: MailerDep) -> None:
     await mailer.send(MailMessage(to="test@example.com", subject="Test", body="Test"))
     return None
+
+
+@router.post("/uploads")
+async def upload_file(file: UploadFile, storage: StorageDep) -> str:
+    file_contents = await file.read()
+    file_path = file.filename or uuid4().hex
+
+    await storage.write(file_path, file_contents)
+
+    return file_path
+
+
+@router.get("/uploads/{file_path}")
+async def get_upload(file_path: str, storage: StorageDep) -> Response:
+    return Response(
+        content=await storage.read(file_path), media_type="application/octet-stream"
+    )
