@@ -16,6 +16,19 @@ services:
       # MP_SMTP_TLS_CERT: sans:localhost
       # MP_SMTP_TLS_KEY: sans:localhost
       # MP_SMTP_REQUIRE_TLS: true
+  valkey:
+    container_name: valkey
+    image: valkey/valkey:alpine3.22
+    volumes:
+      - valkey_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    ports:
+      - 6379:6379
 
 volumes:
   mailpit_data:
+  valkey_data:

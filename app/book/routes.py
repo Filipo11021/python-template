@@ -1,8 +1,10 @@
+import time
 from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException, Response, UploadFile
 from sqlmodel import select
 
+from app.background_runner.deps import BackgroundRunnerDep
 from app.book.models import Book
 from app.book.schemas import (
     BookCreateRequest,
@@ -11,6 +13,7 @@ from app.book.schemas import (
     books_to_response,
 )
 from app.database import AsyncSessionDep
+from app.logger import LoggerDep
 from app.mailer import MailerDep, MailMessage
 from app.storage.deps import StorageDep
 
@@ -81,3 +84,18 @@ async def get_upload(file_path: str, storage: StorageDep) -> Response:
     return Response(
         content=await storage.read(file_path), media_type="application/octet-stream"
     )
+
+
+def heavy_task(logger: LoggerDep) -> None:
+    logger.info("Heavy task started")
+    time.sleep(10)
+    logger.info("Heavy task completed")
+
+
+@router.post("/background-tasks")
+async def background_tasks(
+    background_runner: BackgroundRunnerDep, logger: LoggerDep
+) -> None:
+    await background_runner.add_task(heavy_task, logger=logger)
+
+    return None
