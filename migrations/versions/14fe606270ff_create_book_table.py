@@ -25,8 +25,8 @@ def upgrade() -> None:
     op.create_table(
         "book",
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("title", sqlmodel.sql.sqltypes.AutoString(), nullable=False),
-        sa.Column("description", sqlmodel.sql.sqltypes.AutoString(), nullable=False),
+        sa.Column("title", sqlmodel.sql.sqltypes.AutoString(), nullable=False),  # type: ignore
+        sa.Column("description", sqlmodel.sql.sqltypes.AutoString(), nullable=False),  # type: ignore
         sa.PrimaryKeyConstraint("id"),
     )
     # ### end Alembic commands ###

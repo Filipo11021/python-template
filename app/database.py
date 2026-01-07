@@ -10,8 +10,16 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.settings import settings
 
 
+def get_sync_connection_string() -> str:
+    return f"sqlite:///{settings.db_name}"
+
+
+def get_async_connection_string() -> str:
+    return f"sqlite+aiosqlite:///{settings.db_name}"
+
+
 def create_sync_database_engine() -> Engine:
-    return create_engine(settings.database_url, echo=True)
+    return create_engine(get_sync_connection_string(), echo=True)
 
 
 def get_session() -> Generator[Session, Any]:
@@ -22,7 +30,7 @@ def get_session() -> Generator[Session, Any]:
 
 
 async def create_async_database_engine() -> AsyncEngine:
-    return create_async_engine(settings.database_url, echo=True)
+    return create_async_engine(get_async_connection_string(), echo=True)
 
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, Any]:
