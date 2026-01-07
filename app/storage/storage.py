@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
+from typing import BinaryIO
 
-FileContents = bytes
+FileContents = BinaryIO
 FilePath = str
 
 

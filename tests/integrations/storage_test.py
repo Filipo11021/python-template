@@ -1,5 +1,7 @@
 import shutil
+from io import BytesIO
 from pathlib import Path
+from typing import BinaryIO
 
 import pytest
 
@@ -22,7 +24,7 @@ def remove_directory(path: str | Path) -> None:
 
 
 async def test_in_memory_storage() -> None:
-    storage: dict[str, bytes] = {}
+    storage: dict[str, BinaryIO] = {}
 
     writable = InMemoryStorageWritable(storage)
     readable = InMemoryStorageReadable(storage)
@@ -31,11 +33,11 @@ async def test_in_memory_storage() -> None:
     path = "test"
     contents = b"aaaaa"
 
-    await writable.write(path, contents)
+    await writable.write(path, BytesIO(contents))
 
     read_contents = await readable.read(path)
 
-    assert read_contents == contents
+    assert read_contents.read() == contents
 
     await deletable.delete(path)
 
@@ -54,11 +56,11 @@ async def test_in_file_system_storage() -> None:
         path = "test"
         contents = b"aaaaa"
 
-        await writable.write(path, contents)
+        await writable.write(path, BytesIO(contents))
 
         read_contents = await readable.read(path)
 
-        assert read_contents == contents
+        assert read_contents.read() == contents
 
         await deletable.delete(path)
 

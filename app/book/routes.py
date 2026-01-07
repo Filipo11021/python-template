@@ -70,11 +70,10 @@ async def notify(mailer: MailerDep) -> None:
 
 
 @router.post("/uploads")
-async def upload_file(file: UploadFile, storage: StorageDep) -> str:
-    file_contents = await file.read()
-    file_path = file.filename or uuid4().hex
+async def upload_file(upload: UploadFile, storage: StorageDep) -> str:
+    file_path = upload.filename or uuid4().hex
 
-    await storage.write(file_path, file_contents)
+    await storage.write(file_path, upload.file)
 
     return file_path
 

@@ -1,6 +1,6 @@
 from collections.abc import AsyncGenerator, Callable
 from contextlib import asynccontextmanager
-from typing import Any
+from typing import Any, BinaryIO
 
 import pytest
 from asgi_lifespan import LifespanManager
@@ -52,7 +52,7 @@ async def test_get_session() -> AsyncGenerator[AsyncSession, Any]:
 
 
 def create_override_get_storage(
-    storage: dict[str, bytes],
+    storage: dict[str, BinaryIO],
 ) -> Callable[[], MyStorageInMemory]:
     return lambda: MyStorageInMemory(storage)
 
@@ -61,7 +61,7 @@ def override_get_session(app: FastAPI) -> None:
     app.dependency_overrides[get_async_session] = test_get_session
 
 
-def override_get_storage(app: FastAPI, storage: dict[str, bytes]) -> None:
+def override_get_storage(app: FastAPI, storage: dict[str, BinaryIO]) -> None:
     app.dependency_overrides[get_storage] = create_override_get_storage(storage)
 
 

@@ -1,4 +1,5 @@
 import os
+from io import BytesIO
 
 from app.storage.storage import (
     FileContents,
@@ -18,7 +19,7 @@ class FileSystemStorageWritable(StorageWritable):
         os.makedirs(os.path.dirname(full_path), exist_ok=True)
 
         with open(full_path, "wb") as f:
-            f.write(contents)
+            f.write(contents.read())
 
 
 class FileSystemStorageReadable(StorageReadable):
@@ -28,7 +29,7 @@ class FileSystemStorageReadable(StorageReadable):
     async def read(self, path: FilePath) -> FileContents:
         full_path = os.path.join(self.directory, path)
         with open(full_path, "rb") as f:
-            return f.read()
+            return BytesIO(f.read())
 
 
 class FileSystemStorageDeletable(StorageDeletable):
