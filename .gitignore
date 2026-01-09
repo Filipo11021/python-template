@@ -11,9 +11,7 @@ wheels/
 .pytest_cache/
 .mypy_cache/
 
-# Database
-dev.db
-
+# Ignore storage (uploaded files in development and any SQLite databases).
 /storage
 
 # Virtual environments

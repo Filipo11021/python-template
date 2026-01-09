@@ -33,7 +33,7 @@ def get_storage() -> MyStorage:
             os.path.dirname(
                 os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             ),
-            "storage",
+            "storage/files",
         )
     )
 
