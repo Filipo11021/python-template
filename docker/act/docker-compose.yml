@@ -5,4 +5,5 @@ services:
     volumes:
       - ${PWD}:${PWD}
       - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:${PWD}/.env:ro
     working_dir: ${PWD}
