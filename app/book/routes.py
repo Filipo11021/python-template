@@ -80,9 +80,8 @@ async def upload_file(upload: UploadFile, storage: StorageDep) -> str:
 
 @router.get("/uploads/{file_path}")
 async def get_upload(file_path: str, storage: StorageDep) -> Response:
-    return Response(
-        content=await storage.read(file_path), media_type="application/octet-stream"
-    )
+    stream = await storage.read(file_path)
+    return Response(content=stream.read(), media_type="application/octet-stream")
 
 
 def heavy_task(logger: LoggerDep) -> None:

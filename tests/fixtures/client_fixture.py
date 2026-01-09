@@ -1,6 +1,6 @@
 from collections.abc import AsyncGenerator, Callable
 from contextlib import asynccontextmanager
-from typing import Any, BinaryIO
+from typing import Any
 
 import pytest
 from asgi_lifespan import LifespanManager
@@ -14,6 +14,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.create_app import create_app
 from app.database import get_async_session
 from app.storage.deps import MyStorageInMemory, get_storage
+from app.storage.in_memory_storage import InMemoryStorageDict
 
 sqlite_file_name = ":memory:"
 async_sqlite_url = f"sqlite+aiosqlite:///{sqlite_file_name}"
@@ -52,7 +53,7 @@ async def test_get_session() -> AsyncGenerator[AsyncSession, Any]:
 
 
 def create_override_get_storage(
-    storage: dict[str, BinaryIO],
+    storage: InMemoryStorageDict,
 ) -> Callable[[], MyStorageInMemory]:
     return lambda: MyStorageInMemory(storage)
 
@@ -61,7 +62,7 @@ def override_get_session(app: FastAPI) -> None:
     app.dependency_overrides[get_async_session] = test_get_session
 
 
-def override_get_storage(app: FastAPI, storage: dict[str, BinaryIO]) -> None:
+def override_get_storage(app: FastAPI, storage: InMemoryStorageDict) -> None:
     app.dependency_overrides[get_storage] = create_override_get_storage(storage)
 
 

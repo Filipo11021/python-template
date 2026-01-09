@@ -1,7 +1,6 @@
 import shutil
 from io import BytesIO
 from pathlib import Path
-from typing import BinaryIO
 
 import pytest
 
@@ -12,6 +11,7 @@ from app.storage.file_system_storage import (
 )
 from app.storage.in_memory_storage import (
     InMemoryStorageDeletable,
+    InMemoryStorageDict,
     InMemoryStorageReadable,
     InMemoryStorageWritable,
 )
@@ -24,7 +24,7 @@ def remove_directory(path: str | Path) -> None:
 
 
 async def test_in_memory_storage() -> None:
-    storage: dict[str, BinaryIO] = {}
+    storage: InMemoryStorageDict = {}
 
     writable = InMemoryStorageWritable(storage)
     readable = InMemoryStorageReadable(storage)
