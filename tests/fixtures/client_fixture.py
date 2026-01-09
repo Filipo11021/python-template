@@ -68,12 +68,12 @@ def override_get_storage(app: FastAPI, storage: InMemoryStorageDict) -> None:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
-    print("creating database")  # noqa: T201
+    global engine
     await test_create_db_and_tables()
-    print("database created")  # noqa: T201
     yield
-    print("resetting database")  # noqa: T201
     await reset_database()
+    if engine:
+        await engine.dispose()
 
 
 @pytest.fixture(scope="session")
