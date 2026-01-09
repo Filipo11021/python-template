@@ -12,7 +12,8 @@ wheels/
 .mypy_cache/
 
 # Ignore storage (uploaded files in development and any SQLite databases).
-/storage
+/storage/*
+!/storage/.keep
 
 # Virtual environments
 .venv
