@@ -38,6 +38,7 @@ format-fix = "ruff format"
 typecheck = "mypy ."
 test = "pytest ."
 migrate-apply = "alembic upgrade head"
+ci-test-push = "docker compose -f ./docker/act/docker-compose.yml run --rm act push -P ubuntu-latest=catthehacker/ubuntu:act-latest"
 
 [tool.poe.tasks.code-quality]
 help = "Ensures code meets the project's standards"
